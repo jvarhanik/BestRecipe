@@ -23,7 +23,6 @@ class RandomRecipeViewModel(private val requestManager: RequestManager) : ViewMo
         })
     }
 
-    // New function to fetch recipes based on selected tag
     fun getRecipesByTag(tag: String) {
         requestManager.getRecipesByTag(tag, object : RandomRecipeResponseListener {
             override fun fetch(response: RecipeResponse, message: String) {

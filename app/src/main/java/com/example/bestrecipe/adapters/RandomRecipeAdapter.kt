@@ -37,11 +37,9 @@ class RandomRecipeAdapter(val context: Context, private val list: List<Recipe>) 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is HeaderViewHolder -> {
-                // Bind header data here
                 holder.bind("Welcome to Best Recipe App")
             }
             is RandomRecipeViewHolder -> {
-                // Adjust position by subtracting 1 because of the header
                 val item = list[position - 1]
                 holder.binding.titleText.apply {
                     text = item.title
@@ -57,11 +55,9 @@ class RandomRecipeAdapter(val context: Context, private val list: List<Recipe>) 
     }
 
     override fun getItemCount(): Int {
-        // Add 1 for the header
         return list.size + 1
     }
 
-    // HeaderViewHolder implementation
     class HeaderViewHolder(val binding: HeaderLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(headerText: String) {
@@ -69,6 +65,5 @@ class RandomRecipeAdapter(val context: Context, private val list: List<Recipe>) 
         }
     }
 
-    // Assuming RandomRecipeViewHolder is implemented using ViewBinding
     class RandomRecipeViewHolder(val binding: RandomRecipeBinding) : RecyclerView.ViewHolder(binding.root)
 }
