@@ -1,5 +1,6 @@
 package com.example.bestrecipe
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,12 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.bestrecipe.adapters.RandomRecipeAdapter
 import com.example.bestrecipe.databinding.ActivityMainBinding
-import com.example.bestrecipe.interfaces.RandomRecipeResponseListener
 import com.example.bestrecipe.models.RecipeResponse
 import com.example.bestrecipe.viewmodels.RandomRecipeViewModel
 import com.example.bestrecipe.viewmodels.RandomRecipeViewModelFactory
+import com.example.bestrecipe.interfaces.RecipeClickListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecipeClickListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var loadingDialog: AlertDialog
     private lateinit var viewModel: RandomRecipeViewModel
@@ -78,17 +79,35 @@ class MainActivity : AppCompatActivity() {
             showError(errorMessage)
         }
 
+        viewModel.recipes.observe(this) { response ->
+            binding.recyclerRandom.adapter = RandomRecipeAdapter(this, response.recipes, this)
+        }
+
         loadingDialog.show()
         viewModel.getRandomRecipes()
     }
 
     private fun updateUI(response: RecipeResponse) {
         loadingDialog.dismiss()
-        binding.recyclerRandom.adapter = RandomRecipeAdapter(this, response.recipes)
+        binding.recyclerRandom.adapter = RandomRecipeAdapter(this, response.recipes, this)
     }
 
     private fun showError(message: String) {
         loadingDialog.dismiss()
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
+    override fun onRecipeClicked(id: Int) {
+        val selectedRecipe = viewModel.recipes.value?.recipes?.find { it.id == id }
+        selectedRecipe?.let {
+            val intent = Intent(this, RecipeDetailsActivity::class.java)
+            intent.putExtra("RECIPE_TITLE", it.title)
+            intent.putExtra("RECIPE_IMAGE", it.image)
+            intent.putExtra("RECIPE_SERVINGS", it.servings)
+            intent.putExtra("RECIPE_PREPARATION", it.readyInMinutes)
+            intent.putExtra("RECIPE_INSTRUCTIONS", it.instructions)
+            startActivity(intent)
+        }
+    }
+
 }

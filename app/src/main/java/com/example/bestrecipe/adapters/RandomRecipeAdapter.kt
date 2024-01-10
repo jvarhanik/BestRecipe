@@ -6,10 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bestrecipe.databinding.HeaderLayoutBinding
 import com.example.bestrecipe.databinding.RandomRecipeBinding
+import com.example.bestrecipe.interfaces.RecipeClickListener
 import com.example.bestrecipe.models.Recipe
 import com.squareup.picasso.Picasso
 
-class RandomRecipeAdapter(val context: Context, private val list: List<Recipe>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RandomRecipeAdapter(
+    private val context: Context,
+    private val list: List<Recipe>,
+    private val clickListener: RecipeClickListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val TYPE_HEADER = 0
@@ -41,14 +46,13 @@ class RandomRecipeAdapter(val context: Context, private val list: List<Recipe>) 
             }
             is RandomRecipeViewHolder -> {
                 val item = list[position - 1]
-                holder.binding.titleText.apply {
-                    text = item.title
-                    isSelected = true
+                holder.itemView.setOnClickListener {
+                    clickListener.onRecipeClicked(item.id)
                 }
+                holder.binding.titleText.text = item.title
                 holder.binding.likesText.text = "${item.aggregateLikes} Likes"
                 holder.binding.portionsText.text = "${item.servings} Servings"
                 holder.binding.preparationText.text = "${item.readyInMinutes} Minutes"
-
                 Picasso.get().load(item.image).into(holder.binding.foodImage)
             }
         }
@@ -59,7 +63,6 @@ class RandomRecipeAdapter(val context: Context, private val list: List<Recipe>) 
     }
 
     class HeaderViewHolder(val binding: HeaderLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(headerText: String) {
             binding.appHeader.text = headerText
         }

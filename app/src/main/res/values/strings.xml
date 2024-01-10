@@ -3,7 +3,7 @@
     <string name="api_key">d7c26b04d62d4b6bbb7ab210a9c72cc0</string>
     <string name="name">Name</string>
     <string-array name="tag">
-       <item>main course</item>
+        <item>main course</item>
         <item>side dish</item>
         <item>soup</item>
         <item>drink</item>
