@@ -12,7 +12,6 @@ interface RandomRecipeInterface {
         @Query("number") number: String
     ): Call<RecipeResponse>
 
-    // Added method to fetch recipes based on a tag
     @GET("recipes/random")
     fun callRecipesByTag(
         @Query("apiKey") apiKey: String,

@@ -2,14 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/green"
+        app:navigationIcon="?android:attr/homeAsUpIndicator"
+        app:title="Recipe Details"
+        app:titleTextColor="@android:color/white" />
 
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:scaleType="centerCrop" /> <!-- You can use a placeholder image here -->
+        android:scaleType="centerCrop"
+        android:layout_marginTop="75dp"/>
 
     <TextView
         android:id="@+id/details_header"

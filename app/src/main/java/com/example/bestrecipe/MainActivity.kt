@@ -1,13 +1,11 @@
 package com.example.bestrecipe
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.SearchView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,9 +26,14 @@ class MainActivity : AppCompatActivity(), RecipeClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         binding.recyclerRandom.setHasFixedSize(true)
         binding.recyclerRandom.layoutManager = GridLayoutManager(this, 1)
+
+        val btnOpenMainActivity = findViewById<Button>(R.id.btnOpenMainActivity)
+        btnOpenMainActivity.setOnClickListener {
+            val intent = Intent(this, StoredRecipesActivity::class.java)
+            startActivity(intent)
+        }
 
         var tags = resources.getStringArray(R.array.tag)
         val adapter = ArrayAdapter(this, R.layout.spinner_text, tags)
@@ -70,7 +73,6 @@ class MainActivity : AppCompatActivity(), RecipeClickListener {
             }
         })
 
-
         viewModel.recipes.observe(this) { response ->
             updateUI(response)
         }
@@ -106,8 +108,21 @@ class MainActivity : AppCompatActivity(), RecipeClickListener {
             intent.putExtra("RECIPE_SERVINGS", it.servings)
             intent.putExtra("RECIPE_PREPARATION", it.readyInMinutes)
             intent.putExtra("RECIPE_INSTRUCTIONS", it.instructions)
+
+            saveRecipeTitle(it.title)
+
             startActivity(intent)
         }
     }
 
+    private fun saveRecipeTitle(recipeTitle: String) {
+        val sharedPreferences = getSharedPreferences("StoredRecipes", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        val currentTitlesSet = sharedPreferences.getStringSet("recipeTitles", HashSet()) ?: HashSet()
+        currentTitlesSet.add(recipeTitle)
+
+        editor.putStringSet("recipeTitles", currentTitlesSet)
+        editor.apply()
+    }
 }
